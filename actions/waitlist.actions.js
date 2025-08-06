@@ -1,7 +1,7 @@
 "use server";
 import { revalidatePath } from "next/cache";
-import dbConnect from "@/lib/db/connect";
-import Guest from "@/lib/models/Guest";
+import dbConnect from "@/lib/database/connection";
+import Guest from "@/lib/database/models/Guest";
 
 export async function getGuests(search = "", status = "") {
   await dbConnect();
