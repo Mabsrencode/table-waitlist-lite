@@ -1,19 +1,53 @@
 "use client";
 
-import { useFormState } from "react-dom";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
 import { addGuest } from "@/actions/waitlist.actions";
+import { useSWRConfig } from "swr";
 
-const initialState = {
-  message: null,
-};
+const schema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters"),
+  partySize: z.number().min(1, "Party size must be at least 1"),
+  phone: z.string().optional(),
+  isPriority: z.boolean().default(false),
+});
 
 export default function GuestForm() {
-  const [state, formAction] = useFormState(addGuest, initialState);
+  const { mutate } = useSWRConfig();
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors, isSubmitting },
+  } = useForm({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      isPriority: false,
+    },
+  });
+
+  const onSubmit = async (data) => {
+    try {
+      const formData = new FormData();
+      formData.append("name", data.name);
+      formData.append("partySize", data.partySize.toString());
+      if (data.phone) formData.append("phone", data.phone);
+      formData.append("isPriority", data.isPriority ? "on" : "");
+
+      await addGuest(formData);
+      mutate("/api/guests");
+      reset();
+    } catch (error) {
+      mutate("/api/guests");
+      console.error("Error adding guest:", error);
+    }
+  };
 
   return (
     <div className="bg-white p-4 rounded-lg shadow">
       <h2 className="text-lg font-semibold mb-4">Add New Guest</h2>
-      <form action={formAction}>
+      <form onSubmit={handleSubmit(onSubmit)}>
         <div className="mb-4">
           <label
             htmlFor="name"
@@ -22,12 +56,13 @@ export default function GuestForm() {
             Name*
           </label>
           <input
-            type="text"
             id="name"
-            name="name"
-            required
+            {...register("name")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md"
           />
+          {errors.name && (
+            <p className="mt-1 text-sm text-red-600">{errors.name.message}</p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -38,13 +73,16 @@ export default function GuestForm() {
             Party Size*
           </label>
           <input
-            type="number"
             id="partySize"
-            name="partySize"
-            min="1"
-            required
+            type="number"
+            {...register("partySize", { valueAsNumber: true })}
             className="w-full px-3 py-2 border border-gray-300 rounded-md"
           />
+          {errors.partySize && (
+            <p className="mt-1 text-sm text-red-600">
+              {errors.partySize.message}
+            </p>
+          )}
         </div>
 
         <div className="mb-4">
@@ -55,18 +93,18 @@ export default function GuestForm() {
             Phone (Optional)
           </label>
           <input
-            type="tel"
             id="phone"
-            name="phone"
+            type="tel"
+            {...register("phone")}
             className="w-full px-3 py-2 border border-gray-300 rounded-md"
           />
         </div>
 
         <div className="mb-4 flex items-center">
           <input
-            type="checkbox"
             id="isPriority"
-            name="isPriority"
+            type="checkbox"
+            {...register("isPriority")}
             className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
           />
           <label
@@ -79,14 +117,11 @@ export default function GuestForm() {
 
         <button
           type="submit"
-          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition"
+          disabled={isSubmitting}
+          className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition disabled:opacity-50"
         >
-          Add Guest
+          {isSubmitting ? "Adding..." : "Add Guest"}
         </button>
-
-        {state.message && (
-          <p className="mt-2 text-sm text-red-600">{state.message}</p>
-        )}
       </form>
     </div>
   );
