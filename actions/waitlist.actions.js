@@ -141,3 +141,27 @@ export async function removeGuest(guestId) {
     };
   }
 }
+
+export async function revertToWaiting(guestId) {
+  try {
+    await dbConnect();
+
+    if (!guestId) {
+      throw new Error("Guest ID is required");
+    }
+
+    await Guest.findByIdAndUpdate(guestId, {
+      status: "WAITING",
+      calledAt: null,
+    });
+
+    revalidatePath("/waitlist");
+    return { success: true, message: "Guest reverted to waiting" };
+  } catch (error) {
+    console.error("Error reverting guest:", error);
+    return {
+      success: false,
+      message: error.message || "Failed to revert guest",
+    };
+  }
+}
