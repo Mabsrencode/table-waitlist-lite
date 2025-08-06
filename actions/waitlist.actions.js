@@ -45,3 +45,35 @@ export async function addGuest(formData) {
   await newGuest.save();
   revalidatePath("/waitlist");
 }
+export async function callGuest(guestId) {
+  await dbConnect();
+
+  await Guest.findByIdAndUpdate(guestId, {
+    status: "CALLED",
+    calledAt: new Date(),
+  });
+
+  revalidatePath("/waitlist");
+}
+
+export async function seatGuest(guestId) {
+  await dbConnect();
+
+  await Guest.findByIdAndUpdate(guestId, {
+    status: "SEATED",
+    seatedAt: new Date(),
+  });
+
+  revalidatePath("/waitlist");
+  revalidatePath("/seated");
+}
+
+export async function removeGuest(guestId) {
+  await dbConnect();
+
+  await Guest.findByIdAndUpdate(guestId, {
+    status: "REMOVED",
+  });
+
+  revalidatePath("/waitlist");
+}
