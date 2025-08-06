@@ -36,8 +36,8 @@ export default function GuestForm() {
       formData.append("isPriority", data.isPriority ? "on" : "");
 
       await addGuest(formData);
-      mutate("/api/guests");
       reset();
+      mutate("/api/guests");
     } catch (error) {
       mutate("/api/guests");
       console.error("Error adding guest:", error);
