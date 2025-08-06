@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import dbConnect from "@/lib/db/connect";
-import Guest from "@/lib/models/Guest";
+import dbConnect from "@/lib/database/connection";
+import Guest from "@/lib/database/models/Guest";
 
 export async function GET() {
   try {

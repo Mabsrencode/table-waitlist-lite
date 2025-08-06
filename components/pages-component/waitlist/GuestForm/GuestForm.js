@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { addGuest } from "@/actions/waitlist.actions";
 import { useSWRConfig } from "swr";
+import toast from "react-hot-toast";
 
 const schema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters"),
@@ -37,9 +38,11 @@ export default function GuestForm() {
 
       await addGuest(formData);
       reset();
-      mutate("/api/guests");
+      mutate(() => true);
+      toast.success("Successfully adding a Guest");
     } catch (error) {
-      mutate("/api/guests");
+      mutate(() => true);
+      toast.error("Something went wrong");
       console.error("Error adding guest:", error);
     }
   };

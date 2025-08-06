@@ -5,7 +5,7 @@ import useSWR from "swr";
 import { callGuest, seatGuest, removeGuest } from "@/actions/waitlist.actions";
 import GracePeriodTimer from "../GracePeriodTimer/GracePeriodTimer";
 import LoadingSkeleton from "@/components/reusable/LoadingSkeleton/LoadingSkeleton";
-const fetcher = (url) => fetch(url).then((res) => res.json());
+import { fetcher } from "@/hooks/useFetch";
 const GuestList = ({ searchParams }) => {
   const { search, status } = searchParams;
   const {
