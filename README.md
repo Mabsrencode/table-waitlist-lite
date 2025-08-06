@@ -61,6 +61,7 @@ quotedWaitMin = (positionInQueue * 15) * (isPriority ? 0.75 : 1)
 - Staff authentication and roles
 - Advanced analytics dashboard
 - Historical data analysis for better wait time predictions
+- Pagination
 
 ### Vercel Link
 
