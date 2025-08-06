@@ -19,7 +19,7 @@ export async function GET(request) {
     }
 
     if (search) {
-      query.$text = { $search: search };
+      query.name = { $regex: search, $options: "i" };
     }
 
     const guests = await Guest.find(query)

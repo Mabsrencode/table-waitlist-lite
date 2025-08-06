@@ -116,6 +116,7 @@ const GuestList = ({ searchParams }) => {
                         <GracePeriodTimer
                           calledAt={guest.calledAt}
                           guestId={guest._id}
+                          guestName={guest.name}
                         />
                       )}
                     </span>
