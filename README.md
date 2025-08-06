@@ -1,36 +1,67 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Table Waitlist Lite
 
-## Getting Started
+## Tech Stack & Choices
 
-First, run the development server:
+- **Next.js 14 (App Router)**.
+- **MongoDB**: NoSQL database for flexible data modeling of guest information.
+- **React Hook Form**: For efficient form handling with Zod validation.
+- **SWR**: Client-side data fetching with caching and revalidation.
+- **Custom Debouncing**: Implemented without libraries for better control.
+- **React Hot Toast**: For user-friendly notifications.
+
+## Setup Instructions
+
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/Mabsrencode/table-waitlist-lite.git
+   cd table-waitlist-lite
+   ```
+2. Create a .env.development file:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+value: MONGODB_URI=mongodb+srv://renielmababa21:UK0SH0st67vtYCIJ@cluster0.clmtikl.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Run to the terminal
+   ```bash
+   npm run dev
+   ```
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+### Wait Time Calculation Formula
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+```javascript
+quotedWaitMin = (positionInQueue * 15) * (isPriority ? 0.75 : 1)
+- 15 minutes per party ahead
+- 5% reduction for priority guests (0.75 multiplier)
+```
 
-## Learn More
+### Grace Period System
 
-To learn more about Next.js, take a look at the following resources:
+- 2-minute timer when guest is called
+- Visual countdown display (MM:SS format)
+- Custom toast notification with "Seat Now" button when the called time period is done it will show a toast to notife the user.
+- Automatic reversion to WAITING status after 10 seconds if no action
+- Optimistic UI updates for immediate feedback
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Trade-offs & Design Decisions
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+- Simplified Wait Time Formula
+- Kept priority reduction for VIP treatment
+- Based purely on queue position for predictability
+- Grace Period Logic
+- Toast notifications prevent missed guests
+- Automatic reversion maintains queue accuracy
+- Optimistic updates before server confirmation
+- Debounced search to reduce API calls
 
-## Deploy on Vercel
+### With More Time I Would Add:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Real-time updates with WebSockets
+- Table management system
+- Staff authentication and roles
+- Advanced analytics dashboard
+- Historical data analysis for better wait time predictions
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+### Vercel Link
+
+[https://table-waitlist-lite-eosin.vercel.app/](https://table-waitlist-lite-eosin.vercel.app/)
