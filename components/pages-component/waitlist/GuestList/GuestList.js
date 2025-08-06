@@ -97,7 +97,7 @@ const GuestList = ({ searchParams }) => {
                     {guest.partySize}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                    {guest.quotedWait} min
+                    {guest.quotedWait} min {guest.isPriority && "(Priority)"}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span

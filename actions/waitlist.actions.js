@@ -45,7 +45,9 @@ export async function addGuest(formData) {
 
     const waitingCount = await Guest.countDocuments({ status: "WAITING" });
     const position = waitingCount + 1;
-    const quotedWait = position * 15 + (partySize >= 5 ? 5 : 0);
+
+    const baseWait = position * 15;
+    const quotedWait = isPriority ? Math.floor(baseWait * 0.75) : baseWait;
 
     const newGuest = new Guest({
       name,
